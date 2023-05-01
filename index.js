@@ -77,13 +77,57 @@ app.get("/api/sortgender", async (req, res) => {
 app.get("/api/limitedstudnents", async (req, res) => {
     try {
         const sortedStudents = await STUDENT_MODEL.find().limit(1);
-        // for getting limited documents we use .limti(Number). It will give onnly given Number of documents
+        // for getting limited documents we use .limti(Number). It will give only given Number of documents
         return res.json({ success: true, data: sortedStudents });
     } catch (error) {
         console.log(error);
         return res.status(400).json({ success: false, error: error.message });
     }
 });
+// filter 
+app.get("/api/filter", async (req, res) => {
+    try {
+        const sortedStudents = await STUDENT_MODEL.find({
+            gender: "M"
+        },
+            {
+                name: 1,
+                branch: 1,
+                college: 1,
+                passoutYear: 1,
+                hobby: 1
+            }
+        );
+        return res.json({ success: true, data: sortedStudents });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+});
+// pagention 
+app.get("/api/pagenation", async (req, res) => {
+    try {
+        const sortedStudents = await STUDENT_MODEL.find().skip((pageno - 1) * 5).limit(5);
+        return res.json({ success: true, data: sortedStudents });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+});
+//find by id also 
+// find by params 
+app.get("/api/params", async (req, res) => {
+    try {
+        const sortedStudents = await STUDENT_MODEL.findById(req.params.id);
+        return res.json({ success: true, data: sortedStudents });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+
+
 connectDatabase();
 app.listen(8000, () => {
     console.log("Server is running at port 8000");

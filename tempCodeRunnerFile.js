@@ -1,1 +1,1 @@
-passoutYear
+/api/limitedstudnents
