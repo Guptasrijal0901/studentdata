@@ -116,7 +116,7 @@ app.get("/api/pagenation", async (req, res) => {
 });
 //find by id also 
 // find by params 
-app.get("/api/params", async (req, res) => {
+app.get("/api/params/:id", async (req, res) => {
     try {
         const sortedStudents = await STUDENT_MODEL.findById(req.params.id);
         return res.json({ success: true, data: sortedStudents });
@@ -125,8 +125,70 @@ app.get("/api/params", async (req, res) => {
         return res.status(400).json({ success: false, error: error.message });
     }
 });
+//update
+app.get("/api/update", async (req, res) => {
+    try {
+        const sortedStudents = await STUDENT_MODEL.findByIdAndUpdate(req.params.id);
+        return res.json({ success: true, data: sortedStudents });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+});
+app.get("/api/findone/:id", async (req, res) => {
+    try {
+        const branch = req.body.branch;
+        const college = req.body.college;
 
+        const filterdStudents = await STUDENT_MODEL.findOne({ branch: branch, college: college },
+            {
+                name: 1,
+                branch: 1,
+                college: 1,
+                passoutYear: 1,
+                hobby: 1
+            }
+        );
+        return res.json({ success: true, data: filterdStudents });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+});
+//update
+app.put("/update/:id", async (req, res) => {
+    try {
+        const data = await STUDENT_MODEL.findByIdAndUpdate(req.params.id, {});
+        return res.json({ success: true, data: data });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+})
 
+app.put("/api/update/:id", async (req, res) => {
+    try {
+        const data = await STUDENT_MODEL.findByIdAndUpdate(req.params.id,
+            {
+                email: "srijal0920@gmail.com",
+                college: "IIT"
+            })
+        return res.json({ success: true, data: data });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+//delete
+app.delete("/api/delete/:id", async (req, res) => {
+    try {
+        const deletedata = await STUDENT_MODEL.findByIdAndDelete(req.params.id,)
+        return res.json({ success: true });
+    } catch (error) {
+        return res.status(400).json({ success: false, error: error.message });
+    }
+})
 
 connectDatabase();
 app.listen(8000, () => {
